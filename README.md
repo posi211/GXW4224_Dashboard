@@ -16,13 +16,16 @@ A lightweight Python dashboard for monitoring a Grandstream GXW4224(v2) FXS gate
 
 1. Download [`setup.ps1`](setup.ps1)
 2. Right-click it → **Run with PowerShell**
+3. Click **Yes** on the Windows admin (UAC) prompt — the script needs admin rights to install Python for all users. It will request this automatically even if you don't run it as admin to start with.
 
 That's it — it installs Python if needed, downloads this project, installs dependencies, walks you through `devices.yaml`, and launches the dashboard.
 
-If Windows blocks the script with an execution-policy error, open PowerShell and run:
+If Windows blocks the script outright with an execution-policy error (before the admin prompt even appears), open PowerShell and run:
 \`\`\`powershell
 powershell -ExecutionPolicy Bypass -File setup.ps1
 \`\`\`
+
+If the file itself shows as "blocked" with no run option (right-click → Properties), check the **Unblock** box near the bottom, click OK, then try again.
 
 Prefer to do it by hand, or on macOS/Linux? See [Manual setup](#manual-setup) below.
 
