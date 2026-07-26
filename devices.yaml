@@ -1,8 +1,8 @@
 devices:
   - name: "Grandstream-GXW4224v2"
-    host: "50.187.233.209"
+    host: "192.168.1.10"
     port: 10161
-    community: "absitelecom"
+    community: "MyCommunityName"
     oids:
       # --- System Info ---
       sysName: "1.3.6.1.2.1.1.5.0"
