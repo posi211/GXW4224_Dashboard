@@ -12,6 +12,20 @@ A lightweight Python dashboard for monitoring a Grandstream GXW4224(v2) FXS gate
 - `dashboard.py` is the Streamlit front end that reads the log and displays port status
 - `start_snmp.bat` launches both on Windows
 
+## Quick install (Windows)
+
+1. Download [`setup.ps1`](setup.ps1)
+2. Right-click it → **Run with PowerShell**
+
+That's it — it installs Python if needed, downloads this project, installs dependencies, walks you through `devices.yaml`, and launches the dashboard.
+
+If Windows blocks the script with an execution-policy error, open PowerShell and run:
+\`\`\`powershell
+powershell -ExecutionPolicy Bypass -File setup.ps1
+\`\`\`
+
+Prefer to do it by hand, or on macOS/Linux? See [Manual setup](#manual-setup) below.
+
 ## Setup
 
 ### 1. Configure the gateway
@@ -64,16 +78,4 @@ streamlit run dashboard.py
 - `app.py` runs Flask with `debug=True` for development convenience. If you expose this beyond localhost, set `debug=False` — the Werkzeug debugger allows remote code execution if reachable.
 - Logs (`snmp_log.json`, `app_log.txt`) are gitignored since they're regenerated locally and may contain your real IP.
 
-## Quick install (Windows)
 
-1. Download [`setup.ps1`](setup.ps1)
-2. Right-click it → **Run with PowerShell**
-
-That's it — it installs Python if needed, downloads this project, installs dependencies, walks you through `devices.yaml`, and launches the dashboard.
-
-If Windows blocks the script with an execution-policy error, open PowerShell and run:
-\`\`\`powershell
-powershell -ExecutionPolicy Bypass -File setup.ps1
-\`\`\`
-
-Prefer to do it by hand, or on macOS/Linux? See [Manual setup](#manual-setup) below.
