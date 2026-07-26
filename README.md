@@ -63,3 +63,17 @@ streamlit run dashboard.py
 - Your SNMP community string acts like a password — never commit `devices.yaml` with real values.
 - `app.py` runs Flask with `debug=True` for development convenience. If you expose this beyond localhost, set `debug=False` — the Werkzeug debugger allows remote code execution if reachable.
 - Logs (`snmp_log.json`, `app_log.txt`) are gitignored since they're regenerated locally and may contain your real IP.
+
+## Quick install (Windows)
+
+1. Download [`setup.ps1`](setup.ps1)
+2. Right-click it → **Run with PowerShell**
+
+That's it — it installs Python if needed, downloads this project, installs dependencies, walks you through `devices.yaml`, and launches the dashboard.
+
+If Windows blocks the script with an execution-policy error, open PowerShell and run:
+\`\`\`powershell
+powershell -ExecutionPolicy Bypass -File setup.ps1
+\`\`\`
+
+Prefer to do it by hand, or on macOS/Linux? See [Manual setup](#manual-setup) below.
