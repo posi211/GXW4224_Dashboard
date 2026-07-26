@@ -1,4 +1,9 @@
-flask
-pysnmp
-pyyaml
-streamlit
+## Requirements
+
+- Python 3.9+ (Windows: download from [python.org](https://www.python.org/downloads/) — **check "Add python.exe to PATH"** during install, or `start_snmp.bat` won't find Python)
+- pip (comes with Python)
+- Python packages (installed via `requirements.txt` in setup below):
+  - `flask` — serves the background polling process
+  - `pysnmp` — talks SNMP to the gateway
+  - `pyyaml` — reads `devices.yaml`
+  - `streamlit` — renders the dashboard UI
