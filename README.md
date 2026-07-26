@@ -1,5 +1,8 @@
 # GXW4224 Dashboard
 
+<img width="1149" height="489" alt="image" src="https://github.com/user-attachments/assets/f11b091f-89ae-4a50-836a-7d1c5e3157eb" />
+
+
 A lightweight Python dashboard for monitoring a Grandstream GXW4224(v2) FXS gateway over SNMP — shows which ports are registered and active (on-hook, ringing, in-call) in near real time (~5–10s delay).
 
 ## How it works
