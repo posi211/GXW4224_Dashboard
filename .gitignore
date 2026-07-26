@@ -1,0 +1,18 @@
+# Runtime data & logs — regenerated automatically, never commit real poll data
+snmp_log.json
+snmp_log.json.tmp
+app_log.txt
+*.tmp
+
+# Local device config — contains your real gateway IP + SNMP community string
+devices.yaml
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
