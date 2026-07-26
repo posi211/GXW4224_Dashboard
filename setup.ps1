@@ -6,10 +6,17 @@
 
 .USAGE
     Right-click this file -> "Run with PowerShell"
+    You'll get a Windows admin (UAC) prompt — accept it. This script needs
+    admin rights to install Python for all users; it will relaunch itself
+    elevated automatically if you don't run it as admin to start with.
 
-    If Windows blocks it with an execution-policy error, instead open
-    PowerShell and run:
+    If Windows blocks it outright with an execution-policy error before
+    it even gets that far, instead open PowerShell and run:
         powershell -ExecutionPolicy Bypass -File setup.ps1
+
+    If the .ps1 file itself is flagged as "blocked" (downloaded from the
+    internet) with no option to run it, right-click -> Properties ->
+    check "Unblock" -> OK, then try again.
 #>
 
 $ErrorActionPreference = "Stop"
@@ -24,10 +31,39 @@ function Write-Step($msg) {
 }
 
 # ---------------------------------------------------------------
+# 0. Re-launch elevated if not already running as Administrator
+#    (needed for an all-users Python install)
+# ---------------------------------------------------------------
+$currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
+$isAdmin = ([Security.Principal.WindowsPrincipal]$currentUser).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+if (-not $isAdmin) {
+    Write-Step "Requesting Administrator privileges (needed to install Python)..."
+    Start-Process powershell -Verb RunAs -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    exit
+}
+
+# ---------------------------------------------------------------
 # 1. Check for Python, install if missing
+#    (also detects the Microsoft Store "python.exe" stub, which
+#    Get-Command finds even when Python isn't really installed —
+#    it just opens the Store instead of running anything)
 # ---------------------------------------------------------------
 Write-Step "Checking for Python..."
-$python = Get-Command python -ErrorAction SilentlyContinue
+
+function Test-RealPython {
+    $cmd = Get-Command python -ErrorAction SilentlyContinue
+    if (-not $cmd) { return $null }
+    if ($cmd.Source -like "*WindowsApps*") { return $null }
+    try {
+        $null = & python --version 2>&1
+        return $cmd
+    } catch {
+        return $null
+    }
+}
+
+$python = Test-RealPython
 
 if (-not $python) {
     Write-Step "Python not found. Installing..."
@@ -37,8 +73,11 @@ if (-not $python) {
         winget install -e --id Python.Python.3.12 --silent --accept-package-agreements --accept-source-agreements
     } else {
         Write-Step "winget not available — downloading the Python installer directly..."
+        $arch = if ([System.Environment]::Is64BitOperatingSystem) {
+            if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") { "arm64" } else { "amd64" }
+        } else { "win32" }
         $pyInstaller = "$env:TEMP\python-installer.exe"
-        Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.12.4/python-3.12.4-amd64.exe" -OutFile $pyInstaller
+        Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.12.4/python-3.12.4-$arch.exe" -OutFile $pyInstaller
         Start-Process -FilePath $pyInstaller -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0" -Wait
         Remove-Item $pyInstaller
     }
@@ -46,7 +85,7 @@ if (-not $python) {
     # Refresh PATH in this session so we can find the newly-installed python.exe
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
                 [System.Environment]::GetEnvironmentVariable("Path", "User")
-    $python = Get-Command python -ErrorAction SilentlyContinue
+    $python = Test-RealPython
 
     if (-not $python) {
         Write-Host ""
